@@ -22,7 +22,7 @@
 
 #import "Antenna.h"
 
-#import "AFURLRequestSerialization.h"
+#import "AFHTTPSessionManager.h"
 
 #import <CoreData/CoreData.h>
 
@@ -306,8 +306,22 @@ requestSerializer:(AFHTTPRequestSerializer <AFURLRequestSerialization> *)request
 #pragma mark - AntennaChannel
 
 - (void)log:(NSDictionary *)payload {
-    NSURLRequest *request = [self.requestSerializer requestWithMethod:self.method URLString:[self.URL absoluteString] parameters:payload error:nil];
-    [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:nil];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithHTTPMethod:self.method
+                                                           URLString:[self.URL absoluteString]
+                                                          parameters:payload
+                                                             headers:nil
+                                                      uploadProgress:nil
+                                                    downloadProgress:nil
+                                                             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                                                                 if(responseObject != nil) NSLog(@"responseObject: %@", responseObject);
+                                                                 NSLog(@"Success");
+                                                             }
+                                                             failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                                                                 NSLog(@"xerror: %@", error.localizedDescription);
+                                                             }];
+    [dataTask resume];
 }
 
 @end
