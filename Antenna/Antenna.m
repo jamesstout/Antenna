@@ -316,10 +316,12 @@ requestSerializer:(AFHTTPRequestSerializer <AFURLRequestSerialization> *)request
                                                     downloadProgress:nil
                                                              success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                                                                  if(responseObject != nil) NSLog(@"responseObject: %@", responseObject);
-                                                                 NSLog(@"Success");
+                                                                 #ifdef DEBUG
+                                                                    NSLog(@"Success");
+                                                                 #endif
                                                              }
                                                              failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                                                                 NSLog(@"xerror: %@", error.localizedDescription);
+                                                                 NSLog(@"error: %@", error.localizedDescription);
                                                              }];
     [dataTask resume];
 }
